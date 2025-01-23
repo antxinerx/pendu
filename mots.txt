@@ -16,3 +16,5 @@ bateau
 iris
 sandra
 bijoux
+love
+joyeux

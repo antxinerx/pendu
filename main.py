@@ -15,6 +15,7 @@ horloge = pygame.time.Clock()
 def charger_mots():
     with open("mots.txt", "r") as fichier:
         mots = fichier.read().splitlines()
+
     return mots
 
 def jeu_du_pendu():
@@ -22,7 +23,7 @@ def jeu_du_pendu():
     mot_a_deviner = random.choice(mots).upper()
     lettres_trouvees = set()
     lettres_proposees = set()
-    tentatives_restantes = 6
+    tentatives_restantes = 1
 
     en_cours = True
     while en_cours:
@@ -39,7 +40,7 @@ def jeu_du_pendu():
                         if lettre in mot_a_deviner:
                             lettres_trouvees.add(lettre)
                         else:
-                            tentatives_restantes -= 1
+                            tentatives_restantes += 1
 
         fenetre.fill(COULEUR_FOND)
 
@@ -58,20 +59,33 @@ def jeu_du_pendu():
         texte = font.render(lettres_proposees_affiche, True, COULEUR_TEXTE)
         fenetre.blit(texte, (50, 150))
 
-        tentatives_affiche = f"Tentatives restantes : {tentatives_restantes}"
-        texte = font.render(tentatives_affiche, True, COULEUR_TEXTE)
-        fenetre.blit(texte, (50, 200))
+        if tentatives_restantes > 1 :
+            imp = pygame.image.load(f"step {tentatives_restantes}.png").convert()
+            fenetre.blit(imp, (50, 200))
 
         if set(mot_a_deviner) <= lettres_trouvees:
-            texte = font.render("Gagné !", True, (0, 255, 0))
+            texte = font.render("Gagné !", True, (255, 0, 0))
+            rejouer = font.render("Pour rejouer appuyez sur espace", True, (255, 0, 0))
             fenetre.blit(texte, (50, 300))
-            en_cours = False
-        elif tentatives_restantes <= 0:
+            fenetre.blit(rejouer, (50, 400))
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        jeu_du_pendu()
+
+            
+        elif tentatives_restantes >= 7:
             texte = font.render(f"Perdu ! Le mot était : {mot_a_deviner}", True, (255, 0, 0))
+            rejouer = font.render("Pour rejouer appuyez sur espace", True, (255, 0, 0))
             fenetre.blit(texte, (50, 300))
-            en_cours = False
+            fenetre.blit(rejouer, (50, 400))
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        jeu_du_pendu()
 
         pygame.display.flip()
         horloge.tick(FPS)
 
     pygame.quit()
+jeu_du_pendu()

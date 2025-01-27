@@ -67,6 +67,8 @@ def ajouter_mot():
                 pygame.quit()
                 exit()
             elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    menu_principal()
                 if event.key == pygame.K_RETURN:
                     if mot:
                         with open("mots.txt","a") as fichier : 
@@ -96,7 +98,7 @@ def jeu_du_pendu():
                 en_cours = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    en_cours = False
+                    menu_principal()
                 elif event.key >= pygame.K_a and event.key <= pygame.K_z:
                     lettre = chr(event.key).upper()
                     if lettre not in lettres_proposees:

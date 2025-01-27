@@ -4,3 +4,8 @@ programme
 jeu
 ordinateur
 algorithme
+love
+classeur
+salut
+hello
+salut

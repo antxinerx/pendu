@@ -12,10 +12,74 @@ fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
 pygame.display.set_caption("Jeu du Pendu")
 horloge = pygame.time.Clock()
 
+def menu_principal():
+    en_cours = True
+    choix = 0
+    options = ["Jouer","Ajouter des mots","Quitter"]
+
+    while en_cours :
+        fenetre.fill(COULEUR_FOND)
+
+        font_titre = pygame.font.Font(None, 74)
+        titre = font_titre.render("Jeu du Pendu", True, COULEUR_TEXTE)
+        fenetre.blit(titre, (250,100))
+
+        font_options = pygame.font.Font(None, 50)
+        for i, option in enumerate(options):
+            couleur = (0,0,255) if i == choix else COULEUR_TEXTE
+            texte_option = font_options.render(option, True, couleur)
+            fenetre.blit(texte_option, (350,250 + i * 50))
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    choix = (choix + 1) % len(options)
+                elif event.key == pygame.K_UP :
+                    choix = (choix - 1)% len(options)
+                elif event.key == pygame.K_RETURN:
+                    if choix == 0:
+                        jeu_du_pendu()
+                    elif choix == 1:
+                        ajouter_mot()
+                    elif choix == 2:
+                        pygame.quit()
+                        exit()
+
+def ajouter_mot():
+    en_cours = True
+    mot = ""
+    while en_cours:
+        fenetre.fill(COULEUR_FOND)
+        font = pygame.font.Font(None, 50)
+        texte = font.render ("Entrez un mot :",True, COULEUR_TEXTE)
+        fenetre.blit(texte, (50, 100))
+        mot_affiche = font.render(mot, True, (0, 0, 255))
+        fenetre.blit(mot_affiche, (50, 200))
+        pygame.display.flip()
+        
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT :
+                pygame.quit()
+                exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    if mot:
+                        with open("mots.txt","a") as fichier : 
+                            fichier.write(f"\n{mot.strip()}")
+                        en_cours = False
+                elif event.key == pygame.K_BACKSPACE:
+                    mot = mot[:-1]
+                elif pygame.K_a <= event.key <= pygame.K_z:
+                    mot += event.unicode
+
 def charger_mots():
     with open("mots.txt", "r") as fichier:
         mots = fichier.read().splitlines()
-
     return mots
 
 def jeu_du_pendu():
@@ -88,4 +152,4 @@ def jeu_du_pendu():
         horloge.tick(FPS)
 
     pygame.quit()
-jeu_du_pendu()
+menu_principal()
